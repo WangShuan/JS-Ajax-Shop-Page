@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Ajax 商品列表展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: rgba(211, 140, 140, 0.2);
+        }
+
+        #box {
+            overflow: hidden;
+            width: 1110px;
+            margin: 10px auto;
+        }
+
+        #box .section {
+            width: 200px;
+            height: 380px;
+            border: 1px solid black;
+            float: left;
+            margin: 10px;
+        }
+
+        .section>img {
+            width: 200px;
+            height: 310px;
+        }
+
+        .section>p {
+            margin: 10px;
+            color: rgb(0, 0, 0);
+        }
+
+        h3 {
+            border: 1px solid rgb(145, 142, 142);
+            height: 50px;
+            width: 600px;
+            color: rgb(146, 2, 2);
+            margin: 15px auto;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        #footer {
+            height: 50px;
+            width: 600px;
+            color: red;
+            margin: 15px auto;
+            text-align: center;
+            line-height: 50px;
+        }
+
+        #footer>span {
+            border: 1px solid black;
+            padding: 5px;
+            margin: 0 5px;
+            text-align: center;
+            width: 10px;
+            height: 16px;
+        }
+
+        .active {
+            background-color: snow;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="head">
+        <h3>Ajax 商品列表 -- 點擊頁碼切換數據</h3>
+    </div>
+    <div id="box">
+        <!-- <div class="section">
+            <img src="http://gaitaobao3.alicdn.com/tfscom/TB1LKkGGVXXXXb4XpXXXXXXXXXX.jpg" alt="">
+            <p>酒紅極顏色很正，相信會有很多姑娘都喜歡酒紅色，特別顯氣質，也顯皮膚氣色好，內搭簡潔的毛衣+打底褲，上班或者休閒都可以穿。</p>
+        </div> -->
+    </div>
+    <div id="footer">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+        <span>6</span>
+    </div>
+
+    <script src="./ajax.js"></script>
+    <script>
+        window.onload = function () {
+            var oBox = document.getElementById('box')
+            var aSpan = document.getElementsByTagName('span')
+            var page = 1
+            var now = 0
+
+            getList()
+
+            function getList() {
+                // 透過參數 page=1 切換頁面
+                ajax('GET', 'http://bluezyz.com/study/getData.php', 'page=' + page, function (response) {
+                    var jsonData = JSON.parse(response)
+                    var myData = jsonData.data
+                    for (i = 0; i < myData.length; i++) {
+                        var oDiv = document.createElement('div')
+                        oDiv.className = 'section'
+                        var oImg = document.createElement('img')
+                        oImg.src = myData[i].zs_pic
+                        oDiv.appendChild(oImg)
+                        var oText = document.createElement('p')
+                        oText.innerText = '商品描述：' + myData[i].describe.substring(0, 25) + '......'
+                        oDiv.appendChild(oText)
+                        oBox.appendChild(oDiv)
+                    }
+                })
+                aSpan[page - 1].className = 'active'
+            }
+
+            for (i = 0; i < aSpan.length; i++) {
+                aSpan[i].onclick = function () {
+                    if (page != this.innerText) {
+                        aSpan[page - 1].className = ''
+                        oBox.innerHTML = ''
+                        page = this.innerText
+                        getList()
+                    }
+                }
+            }
+
+        }
+    </script>
+</body>
+
+</html>
